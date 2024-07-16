@@ -67,6 +67,9 @@ public class MyActivities
     {
         ActivityExecutionContext.Current.Logger.LogInformation("SaveWorkflowStatus activity started, status = {status}",status);
         // Do something with the status (e.g. persist to DB)
+        // Be sure that this activity can handle being called multiple times
+        // (Replay scenarios)
+        // So if using a datasource, use an upsert 
         Console.WriteLine($"Saving the status {status} to a database");
     }
 }

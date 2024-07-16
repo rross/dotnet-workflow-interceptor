@@ -13,9 +13,10 @@ public class MyWorkflowInterceptor : IWorkerInterceptor
 
     private sealed class WorkflowInbound : WorkflowInboundInterceptor
     {
-        ActivityOptions activityOptions = new () {
+        LocalActivityOptions activityOptions = new () {
             // If you want to run this even when the workflow is cancelled
             // you need a different cancellation tokey
+
             CancellationToken = default(CancellationToken),
             StartToCloseTimeout = TimeSpan.FromSeconds(5),
             RetryPolicy = new() {
@@ -53,7 +54,10 @@ public class MyWorkflowInterceptor : IWorkerInterceptor
                 try 
                 {
                     // call an activity to update the status
-                    await Workflow.ExecuteActivityAsync((MyActivities act) => act.SaveWorkflowStatus(status),activityOptions);
+                    // This uses a LOCAL ACTIVITY to avoid signal loss
+                    // Also, be sure that the local activity does an 
+                    // upsert as it can be called multiple times
+                    await Workflow.ExecuteLocalActivityAsync((MyActivities act) => act.SaveWorkflowStatus(status),activityOptions);
                     Console.WriteLine("Done updating status");
                 }
                 catch (Exception ex) 

@@ -48,7 +48,7 @@ public class SimpleWorkflow {
         // then uncomment out the next line to give you some time to 
         // cancel in the UX
         //
-        // await Workflow.DelayAsync(TimeSpan.FromSeconds(10));
+        await Workflow.DelayAsync(TimeSpan.FromSeconds(10));
         var result4 = await echo4Task;
 
         return new SimpleOutput(result4.result);
