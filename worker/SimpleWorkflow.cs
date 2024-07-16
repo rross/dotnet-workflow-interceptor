@@ -23,7 +23,7 @@ public class SimpleWorkflow {
     public async Task<SimpleOutput> RunAsync(SimpleInput input)
     {
         var logger = Workflow.Logger;
-        logger.LogInformation("Simple workflow started, input = {val}", input.val);
+        logger.LogDebug($"Simple workflow started, input = {input.val}");
 
         var result1 = await Workflow.ExecuteActivityAsync(
             (MyActivities act) => act.Echo1(input.val),activityOptions);
@@ -34,7 +34,7 @@ public class SimpleWorkflow {
         var result3 = await Workflow.ExecuteActivityAsync(
             (MyActivities act) => act.Echo3(input.val),activityOptions);
 
-        logger.LogInformation("Sleeping for 1 second...");
+        logger.LogDebug("Sleeping for 1 second...");
         await Workflow.DelayAsync(TimeSpan.FromSeconds(1));
 
         var echoInput = new EchoInput(result3);
@@ -43,6 +43,12 @@ public class SimpleWorkflow {
             (MyActivities act) => act.Echo4(echoInput), activityOptions);
         // do some other things
         // get the result from the async activity (and wait if necessary)
+
+        // If you want to test what happens when the workflow is cancelled 
+        // then uncomment out the next line to give you some time to 
+        // cancel in the UX
+        //
+        // await Workflow.DelayAsync(TimeSpan.FromSeconds(10));
         var result4 = await echo4Task;
 
         return new SimpleOutput(result4.result);

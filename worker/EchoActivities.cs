@@ -66,6 +66,7 @@ public class MyActivities
     public void SaveWorkflowStatus(String status)
     {
         ActivityExecutionContext.Current.Logger.LogInformation("SaveWorkflowStatus activity started, status = {status}",status);
-        // Do something with the status (persist to DB)
+        // Do something with the status (e.g. persist to DB)
+        Console.WriteLine($"Saving the status {status} to a database");
     }
 }

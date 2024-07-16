@@ -14,6 +14,9 @@ public class MyWorkflowInterceptor : IWorkerInterceptor
     private sealed class WorkflowInbound : WorkflowInboundInterceptor
     {
         ActivityOptions activityOptions = new () {
+            // If you want to run this even when the workflow is cancelled
+            // you need a different cancellation tokey
+            CancellationToken = default(CancellationToken),
             StartToCloseTimeout = TimeSpan.FromSeconds(5),
             RetryPolicy = new() {
                 InitialInterval = TimeSpan.FromSeconds(1),
@@ -35,32 +38,28 @@ public class MyWorkflowInterceptor : IWorkerInterceptor
 
         public override async Task<object?> ExecuteWorkflowAsync(ExecuteWorkflowInput input)
         {
-            // Workflow.Logger.LogInformation("Executing workflow asynchronously...");
-            Console.WriteLine("execute workflow async...");
+            Console.WriteLine("Executing workflow asynchronously...");
             var status = "failure";
             try 
             {
-                var returnValue =  await base.ExecuteWorkflowAsync(input).ConfigureAwait(false);
+                var returnValue =  await base.ExecuteWorkflowAsync(input);
                 status = "success";
-                // Workflow.Logger.LogInformation("workflow async completed. Status is {status}", status);
-                Console.WriteLine("async completed");
+                Console.WriteLine($"workflow async completed. Status is {status}",status);
                 return returnValue;
             }   
             finally 
             {
-                // Workflow.Logger.LogInformation("In finally block. Status is {status}", status);
-                Console.WriteLine("in finally");
+                Console.WriteLine($"In finally block. Status is {status}", status);
                 try 
                 {
                     // call an activity to update the status
                     await Workflow.ExecuteActivityAsync((MyActivities act) => act.SaveWorkflowStatus(status),activityOptions);
-                    // Workflow.Logger.LogInformation("Done updating status");
-                    Console.WriteLine("in try block");
+                    Console.WriteLine("Done updating status");
                 }
                 catch (Exception ex) 
                 {
-                    // Workflow.Logger.LogError("An error occurred attempting to update the status {ex}", ex);
                     Console.WriteLine(ex);
+                    Console.WriteLine(ex.StackTrace);
                 }
             }
         }

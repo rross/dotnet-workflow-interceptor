@@ -1,6 +1,5 @@
-# simple-dotnet-template
-To be used as a template project to bootstrap other projects on the [Temporal .NET SDK](https://github.com/temporalio/sdk-dotnet)
-This example shows how to start the workflow using the [Temporal Command Line](https://docs.temporal.io/cli) and a .NET Client application.
+# dotnet-workflow-interceptor
+Demonstrates how to use a workflow interceptor to call an activity once the workflow is complete. 
 
 The worker is located in the [worker folder](worker/) and the client application is located in the [client folder](client/). 
 
@@ -15,7 +14,7 @@ dotnet run
 # run only once
 temporal server start-dev
 # trigger a workflow locally
-temporal workflow start --type SimpleWorkflow --task-queue simple-task-queue --input '{"val":"foo"}'
+temporal workflow start --type SimpleWorkflow --task-queue simple-workflow-interceptor --input '{"val":"foo"}'
 ```
 
 ## Start the Workflow using the Client application
@@ -45,7 +44,7 @@ temporal env set dev.address <namespace>.<accountId>.tmprl.cloud:7233
 temporal env set dev.tls-cert-path /path/to/cert
 temporal env set dev.tls-key-path /path/to/key 
 # trigger a workflow on Temporal Cloud
-temporal workflow start --type SimpleWorkflow --task-queue simple-task-queue --input '{"val":"foo"}' --env dev
+temporal workflow start --type SimpleWorkflow --task-queue simple-workflow-interceptor --input '{"val":"foo"}' --env dev
 ```
 
 ## Start the Workflow on Temporal Cloud using the client app

@@ -41,12 +41,12 @@ Console.CancelKeyPress += (_, eventArgs) =>
 
 var activities = new MyActivities(4);
 
-var workerOptions = new TemporalWorkerOptions("simple-task-queue"). 
+var workerOptions = new TemporalWorkerOptions("simple-workflow-interceptor"). 
     AddAllActivities(activities).
     AddWorkflow<SimpleWorkflow>();
 
+// Add the interceptor to the Worker Options
 var interceptor = new MyWorkflowInterceptor();
-
 workerOptions.Interceptors = [interceptor];
 
 using var worker = new TemporalWorker(
@@ -59,7 +59,7 @@ try
 {
     await worker.ExecuteAsync(tokenSource.Token);
 }
-catch( OperationCanceledException)
+catch(OperationCanceledException)
 {
     Console.WriteLine("Worker cancelled");
 }
