@@ -37,7 +37,7 @@ var firstParameter = new Parameters("aName");
 Console.WriteLine("Calling the workflow with parameters: " + firstParameter);
 
 var handle = await client.StartWorkflowAsync("SimpleWorkflow", [firstParameter], new() {
-  TaskQueue = "simple-task-queue",
+  TaskQueue = "simple-workflow-interceptor",
   Id = Guid.NewGuid().ToString(),
 });
 
